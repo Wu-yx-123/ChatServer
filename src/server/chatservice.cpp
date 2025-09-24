@@ -50,7 +50,8 @@ MsgHandler ChatService::getHandler(int msgid)
     if (it == _msgHandlerMap.end())
     {
         // 返回一个默认的处理器，空操作
-        return [=](const TcpConnectionPtr &conn, json &js, Timestamp) {
+        return [=](const TcpConnectionPtr &conn, json &js, Timestamp)
+        {
             LOG_ERROR << "msgid:" << msgid << " can not find handler!";
         };
     }
@@ -87,7 +88,7 @@ void ChatService::login(const TcpConnectionPtr &conn, json &js, Timestamp time)
             }
 
             // id用户登录成功后，向redis订阅channel(id)
-            _redis.subscribe(id); 
+            _redis.subscribe(id);
 
             // 登录成功，更新用户状态信息 state offline=>online
             user.setState("online");
@@ -210,7 +211,7 @@ void ChatService::loginout(const TcpConnectionPtr &conn, json &js, Timestamp tim
     }
 
     // 用户注销，相当于就是下线，在redis中取消订阅通道
-    _redis.unsubscribe(userid); 
+    _redis.unsubscribe(userid);
 
     // 更新用户的状态信息
     User user(userid, "", "", "offline");
@@ -236,7 +237,7 @@ void ChatService::clientCloseException(const TcpConnectionPtr &conn)
     }
 
     // 用户注销，相当于就是下线，在redis中取消订阅通道
-    _redis.unsubscribe(user.getId()); 
+    _redis.unsubscribe(user.getId());
 
     // 更新用户的状态信息
     if (user.getId() != -1)
@@ -262,7 +263,7 @@ void ChatService::oneChat(const TcpConnectionPtr &conn, json &js, Timestamp time
         }
     }
 
-    // 查询toid是否在线 
+    // 查询toid是否在线
     User user = _userModel.query(toid);
     if (user.getState() == "online")
     {
@@ -326,7 +327,7 @@ void ChatService::groupChat(const TcpConnectionPtr &conn, json &js, Timestamp ti
         }
         else
         {
-            // 查询toid是否在线 
+            // 查询toid是否在线
             User user = _userModel.query(id);
             if (user.getState() == "online")
             {
